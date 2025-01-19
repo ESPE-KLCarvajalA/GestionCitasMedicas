@@ -1,0 +1,48 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: kiara2
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: GestionCitasMedicas
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action: 
+        - dynamodb:*
+      Resource: 
+        - arn:aws:dynamodb:us-east-1:711387128226:table/CitaTable
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+  createCita:
+    handler: src/createCita.createCita
+    events:
+      - httpApi:
+          path: /citas
+          method: post
+  getCita:
+    handler: src/getCita.getCita
+    events:
+      - httpApi:
+          path: /citas
+          method: get
+
+resources:
+  Resources:
+    CitaTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: CitaTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
