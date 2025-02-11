@@ -5,7 +5,6 @@ exports.createCita = async (event) => {
   const dynamodb = new AWS.DynamoDB.DocumentClient();
   const { patientId, doctorId, date, reason } = JSON.parse(event.body);
 
-  // Validación básica
   if (!patientId || !doctorId || !date || !reason) {
     return {
       statusCode: 400,
@@ -22,14 +21,14 @@ exports.createCita = async (event) => {
     doctorId,
     date,
     reason,
-    status: "scheduled", // Estado inicial de la cita
+    status: "scheduled", 
     createdAt,
   };
 
   try {
     await dynamodb
       .put({
-        TableName: "CitaTable", // Asegúrate de usar el nombre correcto
+        TableName: "CitaTable",
         Item: newCita,
       })
       .promise();

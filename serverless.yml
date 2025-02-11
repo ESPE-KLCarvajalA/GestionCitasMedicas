@@ -12,14 +12,16 @@ provider:
         - dynamodb:*
       Resource: 
         - arn:aws:dynamodb:us-east-1:711387128226:table/CitaTable
-functions:
-  hello:
-    handler: handler.hello
-    events:
-      - httpApi:
-          path: /
-          method: get
+  httpApi:
+    cors:
+      allowedOrigins:
+        - http://localhost:3001
+      allowedHeaders:
+        - Content-Type
+        - Authorization
+      allowCredentials: true
 
+functions:
   createCita:
     handler: src/createCita.createCita
     events:
@@ -32,6 +34,20 @@ functions:
       - httpApi:
           path: /citas
           method: get
+  
+  updateCita:
+    handler: src/updateCita.updateCita
+    events:
+      - httpApi:
+          path: /citas/{id}
+          method: put
+
+  deleteCita:
+    handler: src/deleteCita.deleteCita
+    events:
+      - httpApi:
+          path: /citas/{id}
+          method: delete
 
 resources:
   Resources:
